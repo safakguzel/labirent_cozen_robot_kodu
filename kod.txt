@@ -1,0 +1,111 @@
+int t1=2; //ileri geri için motor pini 1
+int t2=3; //ileri geri için motor pini 2
+int t3=4; //dönüşler için motor pini 1
+int t4=5; //dönüşler iççin motor pini 1
+ 
+int trigPin=13; // ön ultrasonik sensör
+int echoPin=12; //ön ultrasonik sensör
+int trigPinSol=11; // sol ultrasonik sensör
+int echoPinSol=10; // sol ultrasonik sensör
+int trigPinSag=9; // sağ ultrasonik sensör
+int echoPinSag=8; // sağ ultrasonik sensör
+ 
+long microsaniyeSure, cmMesafe; // Mesafe hesabında kullanılan değişkenler
+int c=0;
+void setup() {
+  /*
+  * Pinlerimizin giriş çıkışlarını ayarlıyoruz
+  */
+pinMode(t1,OUTPUT);
+pinMode(t2,OUTPUT);
+pinMode(t3,OUTPUT);
+pinMode(t4,OUTPUT);
+ 
+pinMode(trigPin,OUTPUT);
+pinMode(echoPin,INPUT);
+pinMode(trigPinSol,OUTPUT);
+pinMode(echoPinSol,INPUT);
+pinMode(trigPinSag,OUTPUT);
+pinMode(echoPinSag,INPUT);
+}
+ 
+void loop() {
+  if(mesafeOlc(echoPin,trigPin) <= 40){
+    if(mesafeOlc(echoPinSag,trigPinSag) >= 40){
+      sifir(); 
+      sagaDon();
+    }else if(mesafeOlc(echoPinSol,trigPinSol) >= 40){
+      sifir(); 
+      solaDon();
+    }else{
+      sifir();
+       geri();
+    }
+  }else{
+    ileri();
+  }
+}
+ 
+void sagaDon(){
+ sifir();
+  sag();
+ ileri();
+ delay(500);
+ sifir();
+ delay(200);
+ sol();
+ geri();
+ delay(500);
+ sifir();
+}
+ 
+void solaDon(){
+ sifir();
+  sol();
+ ileri();
+ delay(500);
+ sifir();
+ delay(200);
+ sag();
+ geri();
+ delay(500);
+ sifir();
+}
+ 
+long mesafeOlc(int echo,int trig){
+ digitalWrite(trig, LOW); // Hoparlör 2ms sessiz
+ delayMicroseconds(2); 
+ digitalWrite(trig, HIGH); // Hoparlör 10ms sesli
+ delayMicroseconds(10); 
+ digitalWrite(trig, LOW); // Hoparlör sessiz
+ microsaniyeSure = pulseIn(echo, HIGH); // Mikrofonu dinle, yansıma süresini microsaniyeSure değişkenine al
+ cmMesafe = microsaniyeSure/58.3; // microsaniyeSure'dan cm olarak mesafeyi hesapla
+return cmMesafe;
+}
+ 
+ 
+void sifir(){
+digitalWrite(t1,LOW);
+digitalWrite(t2,LOW);
+digitalWrite(t3,LOW);
+digitalWrite(t4,LOW);
+}
+ 
+void sol(){
+digitalWrite(t4,LOW);
+digitalWrite(t3,HIGH);
+}
+ 
+void sag(){
+digitalWrite(t3,LOW);
+digitalWrite(t4,HIGH);
+}
+ 
+void geri(){
+digitalWrite(t1,LOW);
+digitalWrite(t2,HIGH);
+}
+void ileri(){
+digitalWrite(t2,LOW);
+digitalWrite(t1,HIGH);
+} 
